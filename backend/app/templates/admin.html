@@ -1,0 +1,60 @@
+﻿<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Admin - DocPreview</title>
+    <style>
+      body { font-family: Arial, sans-serif; padding: 12px }
+      table { border-collapse: collapse; width: 100% }
+      th, td { border: 1px solid #ddd; padding: 8px }
+    </style>
+  </head>
+  <body>
+    <h1>绠＄悊鍛橀潰鏉?/h1>
+    <p>褰撳墠鐢ㄦ埛: {{ user.display_name }} ({{ user.username }})</p>
+
+    <h2>涓婁紶鏂囨。</h2>
+    <form id="uploadForm" enctype="multipart/form-data" method="post" action="/admin/upload">
+      <input type="file" name="file" />
+      <button type="submit">涓婁紶</button>
+    </form>
+
+    <h2>鏂囨。鍒楄〃</h2>
+    <table>
+      <thead><tr><th>ID</th><th>鏂囦欢鍚?/th><th>Pages</th><th>Size</th><th>Uploaded By</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for d in docs %}
+      <tr>
+        <td>{{ d.id }}</td>
+        <td>{{ d.filename }}</td>
+        <td>{{ d.pages or '鈥? }}</td>
+        <td>{{ d.size or '鈥? }}</td>
+        <td>{{ d.uploaded_by }}</td>
+        <td>
+          <a href="/view/{{ d.id }}" target="_blank">棰勮</a>
+          &nbsp;|&nbsp;
+          <button onclick="promptPermissions({{ d.id }}, '{{ d.allowed_users or '' }}')">鏉冮檺</button>
+          &nbsp;|&nbsp;
+          <button onclick="deleteDoc({{ d.id }})">鍒犻櫎</button>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    <script>
+      function promptPermissions(id, current) {
+        const allowed = prompt('杈撳叆鍏佽鏌ョ湅鐨勭敤鎴峰悕锛岄€楀彿鍒嗛殧锛堢暀绌鸿〃绀烘墍鏈夎璇佺敤鎴凤級', current || '');
+        if (allowed !== null) {
+          fetch(`/admin/docs/${id}/permissions`, {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: new URLSearchParams({allowed_users: allowed})})
+            .then(r => r.json()).then(j => alert('宸叉洿鏂? ' + JSON.stringify(j))).catch(e=>alert(e))
+        }
+      }
+      function deleteDoc(id) {
+        if (!confirm('纭鍒犻櫎鏂囨。 #' + id + ' ?')) return;
+        fetch(`/admin/docs/${id}/delete`, {method:'POST'}).then(r=>r.json()).then(j=>{ alert('鍒犻櫎鎴愬姛'); location.reload(); }).catch(e=>alert(e))
+      }
+    </script>
+  </body>
+</html>
+

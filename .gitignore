@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.Python
+env/
+venv/
+.venv/
+ENV/
+.env
+pip-wheel-metadata/
+.pytest_cache/
+.pytest_cache
+.pyre/
+
+# IDEs
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# data / uploads
+data/
+data_files/
+uploads/
+
+# DB
+*.db
+*.sqlite3
+
+# pytest
+.cache/
+
+# logs
+*.log
+
+# distribution
+dist/
+build/
+
+# Docker
+docker-compose.override.yml
+
+# Ignore recovered workspace temporary files
+*.tmp
+
